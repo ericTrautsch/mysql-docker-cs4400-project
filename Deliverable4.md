@@ -128,6 +128,9 @@ Employee ||--o{ Incoming : ""
 -   Incoming – Each instance represents a part shipment ordered from a supplier. 
 
 ## Attributes 
+
+Based on the above ER model, the attributes are as follows:
+
 | Entity     | Attribute        | Description                                   |
 |------------|------------------|-----------------------------------------------|
 | Part       | part_id (Key)    | Unique identifier for a part                  |
@@ -256,6 +259,8 @@ Referential Integrity Constraints 
 
 ## Data Dictionary 
 
+Based on the normalized database design, our data dictionary takes this form:
+
 | Entity     | Attribute        | Description                                   | Data Type | Notes                    |
 |------------|------------------|-----------------------------------------------|-----------|--------------------------|
 | Part       | part_id          | Unique identifier for a part                  | INT       | Primary key              |
@@ -271,17 +276,15 @@ Referential Integrity Constraints 
 |            | area             | Description of the storage area                | VARCHAR   |                          |
 |            | capacity         | Maximum capacity of the storage area           | INT       |                          |
 |            | location         | Location of the storage area                   | VARCHAR   |                          |
-| Outgoing   | outgoing_id      | Unique identifier for an outgoing order        | INT       | Primary key              |
-|            | customer_id      | Unique identifier for the customer             | INT       | Foreign key (Customer)   |
-|            | employee_id      | Unique identifier for the employee             | INT       | Foreign key (Employee)   |
-|            | storage_area_id  | Unique identifier for the storage area          | INT       | Foreign key (StorageArea)|
-|            | part_id          | Unique identifier for the part in the order     | INT       | Foreign key (Part)       |
-|            | quantity         | Quantity of the part in the order               | INT       |                          |
-|            | profit_per_unit  | Profit per unit of the part in the order        | FLOAT     |                          |
-|            | placed_on        | Date and time when the order was placed         | DATETIME  |                          |
-|            | completed_on     | Date and time when the order was completed      | DATETIME  |                          |
-| Incoming   | incoming_id      | Unique identifier for an incoming order         | INT       | Primary key              |
-|            | part_id          | Unique identifier for the part in the order     | INT       | Foreign key (Part)       |
+| Outgoing   | customer_id      | Unique identifier for the customer                   | int      | Foreign key (Customer)                   |
+|            | employee_id      | Unique identifier for the employee                   | int      | Foreign key (Employee)                   |
+|            | storage_area_id  | Unique identifier for the storage area                | int      | Foreign key (StorageArea)                |
+|            | part_id          | Unique identifier for the part in the order           | int      | Foreign key (Part)                       |
+|            | quantity         | Quantity of the part in the order                     | int      |                                                |
+|            | profit_per_unit  | Profit per unit of the part in the order              | float    |                                                |
+|            | placed_on        | Date and time when the order was placed               | datetime |                                                |
+|            | completed_on     | Date and time when the order was completed            | datetime |                                                |
+|    Incoming        | part_id          | Unique identifier for the part in the order     | INT       | Foreign key (Part)       |
 |            | storage_area_id  | Unique identifier for the storage area          | INT       | Foreign key (StorageArea)|
 |            | employee_id      | Unique identifier for the employee placing the order | INT  | Foreign key (Employee)   |
 |            | supplier_id      | Unique identifier for the supplier              | INT       | Foreign key (Supplier)   |
