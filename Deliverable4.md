@@ -268,47 +268,47 @@ Based on the normalized database design, our data dictionary takes this form:
 |            | weight           | Weight of the part in pounds                   | FLOAT     |                          |
 |            | manufacturer     | Name of the manufacturer of the part           | VARCHAR   |                          |
 |            | material_type    | Type of material the part is made from         | VARCHAR   |                          |
-| Inventory  | part_id          | Unique identifier for a part in inventory      | INT       | Foreign key (Part)       |
-|            | storage_area_id  | Unique identifier for a storage area in inventory | INT    | Foreign key (StorageArea) |
+| Inventory  | part_id          | Unique identifier for a part in inventory      | Integer       | Foreign key (Part)       |
+|            | storage_area_id  | Unique identifier for a storage area in inventory | Integer    | Foreign key (StorageArea) |
 |            | cost_per_unit    | Cost per unit of the part in inventory         | FLOAT     |                          |
-|            | quantity         | Quantity of the part in inventory              | INT       |                          |
-| StorageArea| storage_area_id  | Unique identifier for a storage area           | INT       | Primary key              |
+|            | quantity         | Quantity of the part in inventory              | Integer       |                          |
+| StorageArea| storage_area_id  | Unique identifier for a storage area           | Integer       | Primary key              |
 |            | area             | Description of the storage area                | VARCHAR   |                          |
-|            | capacity         | Maximum capacity of the storage area           | INT       |                          |
+|            | capacity         | Maximum capacity of the storage area           | Integer       |                          |
 |            | location         | Location of the storage area                   | VARCHAR   |                          |
-| Outgoing   | customer_id      | Unique identifier for the customer                   | int      | Foreign key (Customer)                   |
-|            | employee_id      | Unique identifier for the employee                   | int      | Foreign key (Employee)                   |
-|            | storage_area_id  | Unique identifier for the storage area                | int      | Foreign key (StorageArea)                |
-|            | part_id          | Unique identifier for the part in the order           | int      | Foreign key (Part)                       |
-|            | quantity         | Quantity of the part in the order                     | int      |                                                |
-|            | profit_per_unit  | Profit per unit of the part in the order              | float    |                                                |
+| Outgoing   | customer_id      | Unique identifier for the customer                   | Integer      | Foreign key (Customer)                   |
+|            | employee_id      | Unique identifier for the employee                   | Integer      | Foreign key (Employee)                   |
+|            | storage_area_id  | Unique identifier for the storage area                | Integer      | Foreign key (StorageArea)                |
+|            | part_id          | Unique identifier for the part in the order           | Integer      | Foreign key (Part)                       |
+|            | quantity         | Quantity of the part in the order                     | Integer      |                                                |
+|            | profit_per_unit  | Profit per unit of the part in the order              | FLOAT    |                                                |
 |            | placed_on        | Date and time when the order was placed               | datetime |                                                |
 |            | completed_on     | Date and time when the order was completed            | datetime |                                                |
-|    Incoming        | part_id          | Unique identifier for the part in the order     | INT       | Foreign key (Part)       |
-|            | storage_area_id  | Unique identifier for the storage area          | INT       | Foreign key (StorageArea)|
-|            | employee_id      | Unique identifier for the employee placing the order | INT  | Foreign key (Employee)   |
-|            | supplier_id      | Unique identifier for the supplier              | INT       | Foreign key (Supplier)   |
+|    Incoming        | part_id          | Unique identifier for the part in the order     | Integer       | Foreign key (Part)       |
+|            | storage_area_id  | Unique identifier for the storage area          | Integer       | Foreign key (StorageArea)|
+|            | employee_id      | Unique identifier for the employee placing the order | Integer  | Foreign key (Employee)   |
+|            | supplier_id      | Unique identifier for the supplier              | Integer       | Foreign key (Supplier)   |
 |            | cost_per_unit    | Cost per unit of the part in the order           | FLOAT     |                          |
 |            | quantity         | Quantity of the part in the order                | INT       |                          |
 |            | ordered_on       | Date and time when the order was placed          | DATETIME  |                          |
 |            | received_on      | Date and time when the order was received        | DATETIME  |                          |
 | Supplier   | supplier_id      | Unique identifier for the supplier            | Integer  | Primary Key                                 |
-|            | name             | Name of the supplier                           | Text     |                                             |
-|            | address          | Address of the supplier                        | Text     |                                             |
-|            | phone            | Phone number of the supplier                    | Text     |                                             |
-|            | email            | Email address of the supplier                   | Text     |                                             |
+|            | name             | Name of the supplier                           | VARCHAR     |                                             |
+|            | address          | Address of the supplier                        | VARCHAR     |                                             |
+|            | phone            | Phone number of the supplier                    | VARCHAR     |                                             |
+|            | email            | Email address of the supplier                   | VARCHAR     |                                             |
 | Customer   | customer_id      | Unique identifier for the customer             | Integer  | Primary Key                                 |
-|            | name             | Name of the customer                            | Text     |                                             |
-|            | address          | Address of the customer                         | Text     |                                             |
-|            | phone            | Phone number of the customer                     | Text     |                                             |
-|            | email            | Email address of the customer                    | Text     |                                             |
+|            | name             | Name of the customer                            | VARCHAR     |                                             |
+|            | address          | Address of the customer                         | VARCHAR     |                                             |
+|            | phone            | Phone number of the customer                     | VARCHAR     |                                             |
+|            | email            | Email address of the customer                    | VARCHAR     |                                             |
 | Employee   | employee_id      | Unique identifier for the employee              | Integer  | Primary Key                                 |
-|            | name             | Name of the employee                             | Text     |                                             |
-|            | address          | Address of the employee                          | Text     |                                             |
-|            | phone            | Phone number of the employee                      | Text     |                                             |
-|            | office_num       | Office number of the employee                     | Text     |                                             |
-|            | email            | Email address of the employee                     | Text     |                                             |
-|            | title            | Job title of the employee                         | Text     |                                             |
+|            | name             | Name of the employee                             | VARCHAR     |                                             |
+|            | address          | Address of the employee                          | VARCHAR     |                                             |
+|            | phone            | Phone number of the employee                      | VARCHAR     |                                             |
+|            | office_num       | Office number of the employee                     | VARCHAR     |                                             |
+|            | email            | Email address of the employee                     | VARCHAR     |                                             |
+|            | title            | Job title of the employee                         | VARCHAR     |                                             |
 |            | hire_date        | Date the employee was hired                       | Date     |                                             |
 
 ## Database Authorization Strategy 
