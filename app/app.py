@@ -6,7 +6,7 @@ import json
 app = Flask(__name__)
 
 
-def get_tables(tables = ['Customer']):
+def get_tables(tables = ['Customer', 'Employee', 'Outgoing', 'Incoming', 'Part', 'StorageArea']) -> List[Dict]:
     config = {
         'user': 'root',
         'password': 'root',
@@ -15,22 +15,27 @@ def get_tables(tables = ['Customer']):
         'database': 'warehouse'
     }
     results = []
-    connection = mysql.connector.connect(**config)
-    cursor = connection.cursor()
-    cursor.execute(f'SELECT * FROM Customer')
-    result = cursor.fetchall()
-    cursor.close()
-    connection.close()
-    return result
+    for table in tables:
+        try:
+            connection = mysql.connector.connect(**config)
+            cursor = connection.cursor()
+            cursor.execute(f'SELECT * FROM {table}')
+            names = [field_md[0] for field_md in cursor.description]
+            data = cursor.fetchall()
+            results += [(table, names, data)]
+            cursor.close()
+            connection.close()
+        except:
+            # todo: flash an error message to html display
+            print('error error')
+    return results
 
 
 @app.route('/')
-def index():
+def index() -> str:
     result = get_tables()
     print('RESULT HERE', result)
-    render_template('table.html', data = result)
-    return str(result)
-
+    return render_template('table.html', list_tables = result)
 
 
 if __name__ == '__main__':

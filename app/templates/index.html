@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My Table</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    {% block table %}  <!-- This is where you would render your Jinja template for the table -->
+    {% endblock %}  
+  </body>
+</html>

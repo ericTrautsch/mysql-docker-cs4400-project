@@ -1,8 +1,25 @@
+{% extends "index.html" %}
 
-<body>
-    <p>hi</p>
-    {% for d in data %}
-        <p>!!{{ d }}!!</p>
-    {% endfor %}
-</body>
-
+{% block table %}
+{% for data in list_tables %}
+<table>
+    <h2>{{data[0]}} Table</h2>
+    <thead>
+      <tr>
+        {% for column in data[1] %}
+          <th>{{ column }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data[2] %}
+        <tr>
+          {% for value in row %}
+            <td>{{ value }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+{% endblock %}

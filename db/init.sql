@@ -13,10 +13,10 @@ DROP TABLE IF EXISTS Inventory;
 
 -- Create tables
 CREATE TABLE Customer (
-  /*customer_id INTEGER AUTO_INCREMENT PRIMARY KEY,*/
-  name VARCHAR(255) NOT NULL,
-  address VARCHAR(255) NOT NULL,
-  phone VARCHAR(20) NOT NULL
+    customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255),
+    address VARCHAR(255),
+    phone VARCHAR(255)
 );
 
 INSERT INTO Customer (name, address, phone)
@@ -26,12 +26,12 @@ VALUES
   ('Bob Johnson', '789 Elm St', '555-9012'),
   ('Alice Lee', '234 Maple St', '555-3456'),
   ('Tom Wilson', '567 Pine St', '555-7890');
-/*
+
 CREATE TABLE Employee (
   employee_id INT AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(255) NOT NULL,
   last_name VARCHAR(255) NOT NULL,
-  office_number INT NOT NULL
+  office_num INT NOT NULL
 );
 
 CREATE TABLE Part (
@@ -59,7 +59,6 @@ CREATE TABLE Incoming (
   employee_id INT NOT NULL,
   supplier_id INT NOT NULL,
   storage_area_id INT NOT NULL,
-  date_received DATE NOT NULL,
   cost_per_unit FLOAT NOT NULL,
   quantity INT NOT NULL,
   ordered_on DATE NOT NULL,
@@ -80,22 +79,14 @@ CREATE TABLE Outgoing (
   date_placed DATE NOT NULL,
   cost_per_unit FLOAT NOT NULL,
   quantity INT NOT NULL,
-  shipping_cost FLOAT NOT NULL,
+  sale_price_per_unit FLOAT NOT NULL,
+  outgoing_location VARCHAR(255) NOT NULL,
   FOREIGN KEY (part_id) REFERENCES Part(part_id),
   FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
   FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
   FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id)
 );
 
-CREATE TABLE Inventory (
-  part_id INT NOT NULL,
-  storage_area_id INT NOT NULL,
-  cost_per_unit FLOAT NOT NULL,
-  quantity INT NOT NULL,
-  FOREIGN KEY (part_id) REFERENCES Part(part_id),
-  FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id),
-  PRIMARY KEY (part_id, storage_area_id)
-);
 
 -- Insert data into Part table
 INSERT INTO Part (description, size_multiplier) VALUES 
@@ -129,16 +120,10 @@ INSERT INTO Employee (first_name, last_name, office_num) VALUES
     ('Samantha', 'Lee', 103),
     ('David', 'Brown', 104);
 
--- Insert data into Inventory table
-INSERT INTO Inventory (pid, sid, cpu, quantity) VALUES 
-    (1, 1, 10.0, 100),
-    (1, 2, 15.0, 200),
-    (2, 3, 20.0, 300),
-    (3, 4, 25.0, 400),
-    (4, 5, 30.0, 500);
+
 
 -- Insert data into Outgoing table
-INSERT INTO Outgoing (cid, eid, sid, pid, completed_on, placed_on, quantity, cpu, spu, outgoing_location) VALUES 
+INSERT INTO Outgoing (customer_id, employee_id, storage_area_id, part_id, date_completed, date_placed, quantity, cost_per_unit, sale_price_per_unit, outgoing_location) VALUES 
     (1, 1, 1, 1, '2022-01-01', '2021-12-31', 50, 12.0, 15.0, 'Dock A'),
     (2, 2, 2, 1, '2022-02-01', '2022-01-31', 100, 12.0, 15.0, 'Dock B'),
     (3, 3, 3, 2, '2022-03-01', '2022-02-28', 150, 20.0, 25.0, 'Dock C'),
@@ -146,13 +131,11 @@ INSERT INTO Outgoing (cid, eid, sid, pid, completed_on, placed_on, quantity, cpu
     (5, 5, 5, 4, '2022-05-01', '2022-04-30', 250, 30.0, 35.0, 'Dock E');
 
 -- Inserting data into Incoming table
-INSERT INTO Incoming (pid, eid, supplier_id, sid, date, cpu, quantity, ordered_on, received_on)
+INSERT INTO Incoming (part_id, employee_id, supplier_id, storage_area_id, cost_per_unit, quantity, ordered_on, received_on)
 VALUES
-  (1, 2, 1, 1, '2022-03-15', 20, 500, '2022-03-01', '2022-03-16'),
-  (2, 4, 2, 2, '2022-04-10', 15, 300, '2022-04-01', '2022-04-12'),
-  (3, 3, 3, 3, '2022-02-28', 25, 200, '2022-02-15', '2022-03-01'),
-  (4, 1, 2, 2, '2022-01-25', 10, 400, '2022-01-10', '2022-01-27'),
-  (5, 5, 1, 3, '2022-03-20', 30, 600, '2022-03-05', '2022-03-22');
+  (1, 2, 1, 1, 20, 500, '2022-03-01', '2022-03-16'),
+  (2, 4, 2, 2, 15, 300, '2022-04-01', '2022-04-12'),
+  (3, 3, 3, 3, 25, 200, '2022-02-15', '2022-03-01'),
+  (4, 1, 2, 2, 10, 400, '2022-01-10', '2022-01-27'),
+  (5, 5, 1, 3, 30, 600, '2022-03-05', '2022-03-22');
 
-
-*/
