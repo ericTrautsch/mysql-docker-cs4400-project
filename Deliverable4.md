@@ -24,26 +24,31 @@ The goal of this project is to create a database for a distribution center holdi
 
 ## User Types
 
-There are a few types of users that will use this database. First, Managers will use the incoming and outgoing to understand what work Employees need to complete and priority to help direct them. Employees will need to view the incoming and outgoing jobs to complete the work. The Sales team will need information about outgoing orders and profits and customers, and the procurement team (orders new material) will need to understand what material is incoming and outgoing of the parts warehouse as well as views for the Suppliers.  
+There are a few types of users that will use this database. First, Floor managers will use the incoming and outgoing to understand what work Employees need to complete and priority to help direct them. Employees will need to view the incoming and outgoing jobs to complete the work. The Sales team will need information about outgoing orders and profits and customers, and the purchasing team (orders new material) will need to understand what material is incoming and outgoing of the parts warehouse as well as views for the Suppliers. 
+
+- Admin user
+- Floor Managers user
+- Employee user 
+- Sales user
+- Purchasing user
+- Inventory Analyst Role
 
 ## User Views
 
 #### Customer Views
 need user views for tracking their Order history, as well as getting a Product catalog view to order product from. 
-Order (cid, completed_on, placed_on, quantity, cpu, spu, outgoing location). 
-Product Catalog (pid, description, quantity, cpu). Note the cpu must be modified for this view to be the expected sale price.  
+Order.
+Product Catalog Note the cost_per_unit must be modified for this view to be the expected sale price.  
 
 #### Employee Views
-Customer Order view: Includes the attributes of the outgoing relationship (cid, completed_on, placed_on, quantity, cpu, spu, outgoing location). 
+Customer Order view: Includes the attributes of the outgoing relationship. 
 
-Supplier Order view: Includes the attributes of the Incoming relationship (iid, pid, eid, supplier_id, sid, date, cpu, quantity, ordered_on, received_on). 
+Supplier Order view: Includes the attributes of the Incoming relationship . 
 
-Inventory view: Includes the attributes of the Inventory relationship (pid, sid, cpu, quantity), as well as the Part entity attributes (description, size_multiplier) and the StorageArea entity attributes (area, capacity). 
+Inventory view: Includes the attributes of the Inventory relationship, as well as the Part entity attributes  and the StorageArea entity attributes. 
 
 #### Supplier views: 
-Supplier Information view: Includes the attributes of the Supplier entity (supplier_id, name, address, phone). 
-
-Order History view: Includes the attributes of the Incoming relationship (iid, pid, eid, supplier_id, sid, date, cpu, quantity, ordered_on, received_on). 
+Order History view: Includes the attributes of the Incoming relationship and information abuot the Supplier. 
 
 ## Sample Functions 
 
@@ -64,8 +69,6 @@ One more function would be to facilitate a pick, or an employee retrieving parts
 We plan to focus on the warehouse side of the business. This will mean we have a list of storage locations, their size, the current part, and their physical location. We will also have a list of outgoing orders that contains parts and quantities and sale price.  
 
 We also will have a parts table with the part id, the cost per part, and some identifying information. Each Part is a category of parts, being a type of wheel, wing, or chip, of which multiple of these parts can be stored in inventory.  
-
-Each storage location is a physical location where parts can be stored (eg: A box on a shelf) and each of these has a capacity of parts. This storage location can store multiple parts, up to its capacity (must larger than quantity * size_multipler to store).  
 
 In this, we plan to focus on the parts, transactions, storage locations, and inventory. This focus allows us to facilitate day-to-day operation of the warehouse, and focusing on the profits can provide management with a better understanding of how they are doing. We will not include asset management or the responsibilities of any group outside the logistics team internal to the warehouse. 
 
@@ -188,52 +191,30 @@ Based on the above ER model, the attributes are as follows:
 
 ## Relational Schema (3rd normal form) 
 
-Part(__part_id__, description, size_multiplier) 
+Part(__part_id__, description, weight, manufactuer) 
 
 StorageArea(__storage_area_id__, area, capacity) 
 
 Inventory(__part_id__, __storage_area_id__, quantity)
 
-PartCosts(__part_id__, __supplier_id__, __date__, cpu)
+PartCosts(__part_id__, __supplier_id__, __date__, cost_per_unit)
 
 Customer(__cid__, name, address, phone) 
 
 Supplier(__supplier_id__ ,name, address, phone) 
 
-Employee(**employee_id**, fname, lname, office_num) 
+Employee(**employee_id**, name, email, title, hire_date, office_num) 
 
-Outgoing(__customer_id__, employee_id, storage_area_id, __part_id__, completed_on, __placed_on__, quantity, spu, cpu, outgoing_location)
+Outgoing(__customer_id__, employee_id, storage_area_id, __part_id__, completed_on, __placed_on__, quantity, profit_per_unit, cost_per_unit, outgoing_location)
 
-Incoming(__part_id__, employee_id, __supplier_id__, storage_area_id, __date__, cpu, quantity, ordered_on, received_on) 
-
-
+Incoming(__part_id__, employee_id, __supplier_id__, storage_area_id, cost_per_unit, quantity, __ordered_on__, received_on) 
 
 
-Part (**part_id**, description, weight, manufacturer, material_type)
-Inventory (**part_id**, **storage_area_id**, cost_per_unit, quantity)
-StorageArea (**storage_area_id**, area, capacity, location)
-Outgoing (**outgoing_id**, customer_id, employee_id, storage_area_id part_id, quantity, profit_per_unit, placed_on, completed_on)
-Incoming (**incoming_id**, part_id, storage_area_id, employee_id, supplier_id, cost_per_unit, quantity, ordered_on, received_on)
-Supplier (**supplier_id**, name, address, phone, email)
-Customer (**customer_id**, name, address, phone, email)
-Employee (**employee_id**, name, address, phone, office_num, email, title, hire_date)
-
-
-
-Relational Schema (BCNF) 
-
-Part(**part_id**, description, weight, manufacturer, material_type)
-Inventory(**part_id, storage_area_id**, cost_per_unit, quantity)
-StorageArea(**storage_area_id**, area, capacity, location)
-Outgoing(**outgoing_id**, **customer_id**, **employee_id**, **storage_area_id**, **part_id**, quantity, profit_per_unit, placed_on, completed_on)
-Incoming(**incoming_id**, **part_id**, **storage_area_id**, **employee_id**, **supplier_id**, cost_per_unit, quantity, ordered_on, received_on)
-Supplier(**supplier_id**, name, address, phone, email)
-Customer(**customer_id**, name, address, phone, email)
-Employee(**employee_id**, name, address, phone, office_num, email, title, hire_date)
+## Relational Schema (BCNF) 
 
 Currently no change as only Inventory has multi-attribute keys 
 
-Referential Integrity Constraints 
+## Referential Integrity Constraints 
 
 | Relation   | Foreign Key    | Referenced Primary Key |
 |------------|-----------------|------------------------|
@@ -250,13 +231,13 @@ Referential Integrity Constraints 
 | PartCosts  | part_id         | Part(part_id)           |
 | PartCosts  | supplier_id     | Supplier(supplier_id)   |
 | PartCosts  | date            | Incoming(date)          |
-| PartCosts  | cpu             | Incoming(cpu)           |
+| PartCosts  | cost_per_unit             | Incoming(cost_per_unit)           |
 
 ## Loss
 
 Only one relation was decomposed, PartCosts from Inventory.
 
-| R          | part_id (P) | storage_area_id (S) | quantity (Q) | cpu (C) | date (D) | Supplier_ID (Sup) |
+| R          | part_id (P) | storage_area_id (S) | quantity (Q) | cost_per_unit (C) | date (D) | Supplier_ID (Sup) |
 |------------|-------------|---------------------|--------------|---------|----------|-------------------|
 | Inventory  | P           | S                   | Q            | C1      | D1       | Sup1              |
 | PartCosts  | P           | S2                  | Q2           | C       | D        | Sup               |
@@ -272,8 +253,22 @@ Only one relation was decomposed, PartCosts from Inventory.
 -   Customer(customer_id) → name, address, phone, email
 -   Employee(employee_id) → name, address, phone, office_num, email, title, hire_date
 
-## Initial Schema for each User view 
+## Initial Schema for each User views
 
+#### Customer Views
+
+CustomerOrderHistory(__customer_id__, employee_id, storage_area_id, __part_id__, completed_on, __placed_on__, quantity, profit_per_unit, cost_per_unit, outgoing_location)
+
+ProductCatalog(__part_id__, description, weight, manufactuer, total_quantity)
+
+
+#### Employee Views Schemas
+
+StockView(__part_id__, __storage_area_id__, description, weight, manufacturer, quantity, area, capacity)
+
+#### Supplier views: 
+
+OrderHistoryView(__supplier_id__, name, address, phone, __part_id__, quantity, cost_per_unit, __ordered_on__, received_on)
 
 
 ## Data Dictionary 
@@ -333,16 +328,67 @@ Based on the normalized database design, our data dictionary takes this form:
 
 ## Database Authorization Strategy 
 
-|       Role        |  Privilege   |
-|:-----------------:|:------------:|
-|       Admin       | Full access  |
-|       Sales       |  Edit posts  |
-|    Purchasing     | View content |
-|   Floor Manager   |  No access   |
-| Inventory Analyst | Code access  |
-|     Director      | Team control |
+Using CRUD (Create, Read, Update, Delete) to show permissions on each table by each role.
+
+| Tables                      | Admin | Floor Managers | Warehouse Employees | Sales Role | Purchasing Role | Inventory Analyst Role |
+|-----------------------------|-------|----------------|----------|-------|------------|-------------------|
+| Part                        | CRUD  | R              | R        | R     | R          | CRUD                 |
+| StorageArea                 | CRUD  | CRUD           | R        | R     |           | CRUD              |
+| Customer                    | CRUD  | R              | R        | CRUD  | CRU          | R                 |
+| Supplier                    | CRUD  | R              | R        | R     | R       | R                 |
+| Employee                    | CRUD  | CRUD           | R     | R (On themselves)     |      | R              |
+| Inventory                   | CRUD  | CRUD           | CRU        | R     | R          | CRUD              |
+| Outgoing                    | CRUD  | CRUD           | RU        | R     | CRUD          | R                 |
+| Incoming                    | CRUD  | CRUD           | RU        | R     | CRUD       | R                 |
 
 
-Relational Normalization from R 
+## Relational Normalization from R 
 
-R()
+Single Relation, R.
+
+```markdown
+R(__part_id__, description, weight, manufacturer, __storage_area_id__, area, capacity, inv_quantity, inc_quantity, __supplier_id__, __date__, cpu, __cid__, e_name, e_address, e_phone, c_name, c_address, c_phone, **employee_id**, email, title, hire_date, office_num, __customer_id__, completed_on, __placed_on__, profit_per_unit, outgoing_location, __ordered_on__, received_on)
+```
+
+
+Decompose into the following to reduce redundency:
+
+
+```
+Part(part_id, description, weight, manufactuer)
+
+StorageArea(storage_area_id, area, capacity)
+
+Supplier(supplier_id, name, address, phone)
+
+Customer(cid, name, address, phone)
+
+Employee(employee_id, name, email, title, hire_date, office_num)
+
+Inventory(part_id, storage_area_id, quantity)
+
+Outgoing(customer_id, employee_id, part_id, storage_area_id, completed_on, placed_on, quantity, profit_per_unit, cost_per_unit, outgoing_location)
+
+Incoming(part_id, employee_id, supplier_id, storage_area_id, cost_per_unit, quantity, ordered_on, received_on)
+```
+
+And mix to get:
+
+
+Part(__part_id__, description, weight, manufacturer)
+
+StorageArea(__storage_area_id__, area, capacity)
+
+Supplier(__supplier_id__, name, address, phone)
+
+Customer(__customer_id__, name, address, phone)
+
+Employee(__employee_id__, email, title, hire_date, office_num)
+
+Outgoing(__customer_id__, employee_id, storage_area_id, __part_id__, completed_on, __placed_on__, profit_per_unit, outgoing_location)
+
+Incoming(__part_id__, __supplier_id__, ordered_on, __received_on__, quantity, cost_per_part, __part_id__, storage_area_id)
+
+Inventory(__part_id__, __storage_area_id__, quantity)
+
+As the final relations.
