@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: flask-deploy-connect-to-ui-linux
     steps:
       # Check-out your repository.
       - name: Checkout
