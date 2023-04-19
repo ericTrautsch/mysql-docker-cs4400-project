@@ -128,6 +128,10 @@ Employee ||--o{ Incoming : ""
 -   Incoming – Each instance represents a part shipment ordered from a supplier. 
 
 ## Attributes 
+
+
+Based on the above ER model, the attributes are as follows:
+
 | Entity     | Attribute        | Description                                   |
 |------------|------------------|-----------------------------------------------|
 | Part       | part_id (Key)    | Unique identifier for a part                  |
@@ -179,6 +183,7 @@ Employee ||--o{ Incoming : ""
 |            | email            | Email address of the employee                      |
 |            | title            | Job title of the employee                          |
 |            | hire_date        | Date the employee was hired
+
 
 
 ## Relational Schema (3rd normal form) 
@@ -273,14 +278,58 @@ Only one relation was decomposed, PartCosts from Inventory.
 
 ## Data Dictionary 
 
-| Role              |     | Privilege    |     |
-| ----------------- |:---:| ------------ | --- |
-| Admin             |     | Full access  |     |
-| Sales             |     | Edit posts   |     |
-| Purchasing        |     | View content |     |
-| Floor Manager     |     | No access    |     |
-| Inventory Analyst |     | Code access  |     |
-| Director          |     | Team control |     |
+
+Based on the normalized database design, our data dictionary takes this form:
+
+| Entity     | Attribute        | Description                                   | Data Type | Notes                    |
+|------------|------------------|-----------------------------------------------|-----------|--------------------------|
+| Part       | part_id          | Unique identifier for a part                  | INT       | Primary key              |
+|            | description      | Description of the part                       | VARCHAR   |                          |
+|            | weight           | Weight of the part in pounds                   | FLOAT     |                          |
+|            | manufacturer     | Name of the manufacturer of the part           | VARCHAR   |                          |
+|            | material_type    | Type of material the part is made from         | VARCHAR   |                          |
+| Inventory  | part_id          | Unique identifier for a part in inventory      | Integer       | Foreign key (Part)       |
+|            | storage_area_id  | Unique identifier for a storage area in inventory | Integer    | Foreign key (StorageArea) |
+|            | cost_per_unit    | Cost per unit of the part in inventory         | FLOAT     |                          |
+|            | quantity         | Quantity of the part in inventory              | Integer       |                          |
+| StorageArea| storage_area_id  | Unique identifier for a storage area           | Integer       | Primary key              |
+|            | area             | Description of the storage area                | VARCHAR   |                          |
+|            | capacity         | Maximum capacity of the storage area           | Integer       |                          |
+|            | location         | Location of the storage area                   | VARCHAR   |                          |
+| Outgoing   | customer_id      | Unique identifier for the customer                   | Integer      | Foreign key (Customer)                   |
+|            | employee_id      | Unique identifier for the employee                   | Integer      | Foreign key (Employee)                   |
+|            | storage_area_id  | Unique identifier for the storage area                | Integer      | Foreign key (StorageArea)                |
+|            | part_id          | Unique identifier for the part in the order           | Integer      | Foreign key (Part)                       |
+|            | quantity         | Quantity of the part in the order                     | Integer      |                                                |
+|            | profit_per_unit  | Profit per unit of the part in the order              | FLOAT    |                                                |
+|            | placed_on        | Date and time when the order was placed               | datetime |                                                |
+|            | completed_on     | Date and time when the order was completed            | datetime |                                                |
+|    Incoming        | part_id          | Unique identifier for the part in the order     | Integer       | Foreign key (Part)       |
+|            | storage_area_id  | Unique identifier for the storage area          | Integer       | Foreign key (StorageArea)|
+|            | employee_id      | Unique identifier for the employee placing the order | Integer  | Foreign key (Employee)   |
+|            | supplier_id      | Unique identifier for the supplier              | Integer       | Foreign key (Supplier)   |
+|            | cost_per_unit    | Cost per unit of the part in the order           | FLOAT     |                          |
+|            | quantity         | Quantity of the part in the order                | INT       |                          |
+|            | ordered_on       | Date and time when the order was placed          | DATETIME  |                          |
+|            | received_on      | Date and time when the order was received        | DATETIME  |                          |
+| Supplier   | supplier_id      | Unique identifier for the supplier            | Integer  | Primary Key                                 |
+|            | name             | Name of the supplier                           | VARCHAR     |                                             |
+|            | address          | Address of the supplier                        | VARCHAR     |                                             |
+|            | phone            | Phone number of the supplier                    | VARCHAR     |                                             |
+|            | email            | Email address of the supplier                   | VARCHAR     |                                             |
+| Customer   | customer_id      | Unique identifier for the customer             | Integer  | Primary Key                                 |
+|            | name             | Name of the customer                            | VARCHAR     |                                             |
+|            | address          | Address of the customer                         | VARCHAR     |                                             |
+|            | phone            | Phone number of the customer                     | VARCHAR     |                                             |
+|            | email            | Email address of the customer                    | VARCHAR     |                                             |
+| Employee   | employee_id      | Unique identifier for the employee              | Integer  | Primary Key                                 |
+|            | name             | Name of the employee                             | VARCHAR     |                                             |
+|            | address          | Address of the employee                          | VARCHAR     |                                             |
+|            | phone            | Phone number of the employee                      | VARCHAR     |                                             |
+|            | office_num       | Office number of the employee                     | VARCHAR     |                                             |
+|            | email            | Email address of the employee                     | VARCHAR     |                                             |
+|            | title            | Job title of the employee                         | VARCHAR     |                                             |
+|            | hire_date        | Date the employee was hired                       | Date     |                                             |
 
 ## Database Authorization Strategy 
 
