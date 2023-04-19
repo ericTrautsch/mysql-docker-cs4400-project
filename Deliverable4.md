@@ -74,43 +74,13 @@ In this, we plan to focus on the parts, transactions, storage locations, and inv
 
 ## ER Model 
 
-```mermaid
-erDiagram
-Part { id part_id "Key" string description float weight string manufacturer string material_type }
+This is the previous ER model
+![erd](Group2WareHouseERD.png)
 
-Inventory { int part_id "Key" int storage_area_id "Key" float cost_per_unit float quantity }
 
-StorageArea { int storage_area_id "Key" string area int capacity string location }
+This is an updated ER Model for this submission of the document.
 
-Outgoing { int outgoing_id "Key" int customer_id int employee_id int storage_area_id int part_id int quantity float profit_per_unit datetime placed_on datetime completed_on }
-
-Incoming { int incoming_id "Key" int part_id int storage_area_id int employee_id int supplier_id float cost_per_unit float quantity datetime ordered_on datetime received_on }
-
-Supplier { int supplier_id "Key" string name string email string phone string address }
-
-Customer { int customer_id "Key" string name string email string phone string address }
-
-Employee { int employee_id "Key" string name string email string phone int office_num string title datetime hire_date string address }
-  
-  
-  
-
-Part ||--o{ Inventory : ""
-
-Inventory |o--|{ StorageArea : ""
-
-Inventory ||--o{ Outgoing : ""
-
-Inventory ||--o{ Incoming : ""
-
-Customer ||--o{ Outgoing : ""
-
-Supplier ||--o{ Incoming : ""
-
-Employee ||--o{ Outgoing : ""
-
-Employee ||--o{ Incoming : ""
-```
+![block1](Deliverable4.md.1.png)
 
 
 
