@@ -161,7 +161,7 @@ Based on the above ER model, the attributes are as follows:
 
 ## Relational Schema (3rd normal form) 
 
-Part(__part_id__, description, weight, manufactuer) 
+Part(__part_id__, description, weight, manufactuer, material_type) 
 
 StorageArea(__storage_area_id__, area, capacity) 
 
@@ -169,11 +169,11 @@ Inventory(__part_id__, __storage_area_id__, quantity)
 
 PartCosts(__part_id__, __supplier_id__, __date__, cost_per_unit)
 
-Customer(__cid__, name, address, phone) 
+Customer(__customer_id__, name, address, phone) 
 
 Supplier(__supplier_id__ ,name, address, phone) 
 
-Employee(**employee_id**, name, email, title, hire_date, office_num) 
+Employee(__employee_id__, name, email, title, hire_date, office_num) 
 
 Outgoing(__customer_id__, employee_id, storage_area_id, __part_id__, completed_on, __placed_on__, quantity, profit_per_unit, cost_per_unit, outgoing_location)
 
@@ -224,6 +224,8 @@ Only one relation was decomposed, PartCosts from Inventory.
 -   Employee(employee_id) → name, address, phone, office_num, email, title, hire_date
 
 ## Initial Schema for each User views
+
+Each of these user views are draft views. They would be useful for users querying the database for useful information, and in particular for web-application designers for building a front-end to the database and allowing users to get information in a more natural way.
 
 #### Customer Views
 
@@ -316,22 +318,20 @@ Using CRUD (Create, Read, Update, Delete) to show permissions on each table by e
 
 Single Relation, R.
 
-```markdown
-R(__part_id__, description, weight, manufacturer, __storage_area_id__, area, capacity, inv_quantity, inc_quantity, __supplier_id__, __date__, cpu, __cid__, e_name, e_address, e_phone, c_name, c_address, c_phone, **employee_id**, email, title, hire_date, office_num, __customer_id__, completed_on, __placed_on__, profit_per_unit, outgoing_location, __ordered_on__, received_on)
-```
+R(__part_id__, description, weight, manufacturer, material_type, __storage_area_id__, area, capacity, inv_quantity, inc_quantity, __supplier_id__, __date__, cpu, __customer_id__, e_name, e_address, e_phone, c_name, c_address, c_phone, **employee_id**, email, title, hire_date, office_num, __customer_id__, completed_on, __placed_on__, profit_per_unit, outgoing_location, __ordered_on__, received_on)
 
 
 Decompose into the following to reduce redundency:
 
 
 ```
-Part(part_id, description, weight, manufactuer)
+Part(part_id, description, weight, manufactuer, material_type)
 
 StorageArea(storage_area_id, area, capacity)
 
 Supplier(supplier_id, name, address, phone)
 
-Customer(cid, name, address, phone)
+Customer(customer_id, name, address, phone)
 
 Employee(employee_id, name, email, title, hire_date, office_num)
 
@@ -345,7 +345,7 @@ Incoming(part_id, employee_id, supplier_id, storage_area_id, cost_per_unit, quan
 And mix to get:
 
 
-Part(__part_id__, description, weight, manufacturer)
+Part(__part_id__, description, weight, manufacturer, material_type)
 
 StorageArea(__storage_area_id__, area, capacity)
 
