@@ -2,17 +2,19 @@ from typing import List, Dict
 from flask import Flask, render_template
 import mysql.connector
 import json
+import os # <-----
+
 
 app = Flask(__name__)
 
 
 def get_tables(tables = ['Customer', 'Employee', 'Outgoing', 'Incoming', 'Part', 'StorageArea']) -> List[Dict]:
     config = {
-        'user': 'root',
-        'password': 'root',
-        'host': 'db',
+        'user': f'{os.environ.get("DB_USER")}',
+        'password': f'{os.environ.get("DB_PASSWORD")}',
+        'host': f'{os.environ.get("HOST")}',
         'port': '3306',
-        'database': 'warehouse'
+        'database': f'{os.environ.get("DATABASE")}'
     }
     results = []
     for table in tables:
@@ -27,16 +29,15 @@ def get_tables(tables = ['Customer', 'Employee', 'Outgoing', 'Incoming', 'Part',
             connection.close()
         except:
             # todo: flash an error message to html display
-            print('error error')
+            results += ['error']
     return results
 
 
 @app.route('/')
 def index() -> str:
     result = get_tables()
-    print('RESULT HERE', result)
+    # print('RESULT HERE', result)
     return render_template('table.html', list_tables = result)
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0')    
