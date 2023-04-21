@@ -1,21 +1,26 @@
 from typing import List, Dict
-from flask import Flask, render_template
+import time
+from init_db import db_init
+from flask import Flask, render_template, redirect, url_for
 import mysql.connector
 import json
-import os # <-----
+import os
 
-
+db_init()
 app = Flask(__name__)
 
 
-def get_tables(tables = ['Customer', 'Employee', 'Outgoing', 'Incoming', 'Part', 'StorageArea']) -> List[Dict]:
+
+def get_tables(tables = ['Customer']) -> List[Dict]:
+
+
     config = {
-        'user': f'{os.environ.get("DB_USER")}',
-        'password': f'{os.environ.get("DB_PASSWORD")}',
-        'host': f'{os.environ.get("HOST")}',
-        'port': '3306',
-        'database': f'{os.environ.get("DATABASE")}'
-    }
+    'user': f'{os.environ.get("DB_USER")}',
+    'password': f'{os.environ.get("DB_PASSWORD")}',
+    'host': f'{os.environ.get("HOST")}',
+    'port': '3306',
+    'database': f'{os.environ.get("DATABASE")}'}
+ 
     results = []
     for table in tables:
         try:
@@ -29,9 +34,8 @@ def get_tables(tables = ['Customer', 'Employee', 'Outgoing', 'Incoming', 'Part',
             connection.close()
         except:
             # todo: flash an error message to html display
-            results += ['error']
+            results += [('error', 'error', 'error')]
     return results
-
 
 @app.route('/')
 def index() -> str:
@@ -40,4 +44,6 @@ def index() -> str:
     return render_template('table.html', list_tables = result)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')    
+    app.run(host='0.0.0.0', port = os.environ.get('PORT'))
+
+
