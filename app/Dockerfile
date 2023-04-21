@@ -4,10 +4,10 @@ FROM python:3.6
 # The EXPOSE instruction indicates the ports on which a container
 EXPOSE 5000
 
-ENV HOST=$HOST
-ENV DB_PASSWORD=$DB_PASSWORD
-ENV DB_USER=$DB_USER
-ENV DATABASE=$DATABASE
+ENV HOST=${HOST}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_USER=${DB_USER}
+ENV DATABASE=${DATABASE}
 
 # Sets the working directory for following COPY and CMD instructions
 # Notice we haven’t created a directory by this name - this instruction
