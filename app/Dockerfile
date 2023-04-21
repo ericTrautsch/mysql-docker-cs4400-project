@@ -7,13 +7,12 @@ EXPOSE 5000
 ARG a_host=dbdev.cs.uiowa.edu
 ARG a_password
 ARG a_user=root
-ARG a_database=etrautsch
+ARG a_database=db_etrautsch
 
 ENV HOST=$a_host
 ENV DB_PASSWORD=$a_password
 ENV DB_USER=$a_user
 ENV DATABASE=$a_database
-ENV PORT=$PORT
 
 # Sets the working directory for following COPY and CMD instructions
 # Notice we haven’t created a directory by this name - this instruction
