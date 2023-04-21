@@ -6,7 +6,7 @@ import mysql.connector
 import json
 import os
 
-db_init()
+# db_init()
 app = Flask(__name__)
 
 
