@@ -4,6 +4,11 @@ FROM python:3.6
 # The EXPOSE instruction indicates the ports on which a container
 EXPOSE 5000
 
+ARG HOST
+ARG DB_PASSWORD
+ARG DB_USER
+ARG DATABASE
+
 ENV HOST=${HOST}
 ENV DB_PASSWORD=${DB_PASSWORD}
 ENV DB_USER=${DB_USER}
