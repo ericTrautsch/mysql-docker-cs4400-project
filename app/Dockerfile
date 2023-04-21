@@ -14,6 +14,18 @@ EXPOSE 5000
 # ENV DB_USER=$a_user
 # ENV DATABASE=$a_database
 
+ARG a_password
+ENV DB_PASSWORD $a_password
+
+ARG a_host
+ENV HOST $a_host
+
+ARG a_user
+ENV DB_USER $a_user
+
+ARG a_database
+ENV DATABASE $a_database
+
 # Sets the working directory for following COPY and CMD instructions
 # Notice we haven’t created a directory by this name - this instruction
 # creates a directory with this name if it doesn’t exist
