@@ -39,11 +39,12 @@ def get_tables(tables = ['Customer']) -> List[Dict]:
 
 @app.route('/')
 def index() -> str:
-    result = get_tables()
+    #result = get_tables()
     # print('RESULT HERE', result)
-    return render_template('table.html', list_tables = result)
+    return 'hi'#render_template('table.html', list_tables = result)
 
 if __name__ == '__main__':
+    # db_init()
     app.run(host='0.0.0.0', port = os.environ.get('PORT'))
 
 
