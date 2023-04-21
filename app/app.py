@@ -39,9 +39,9 @@ def get_tables(tables = ['Customer']) -> List[Dict]:
 
 @app.route('/')
 def index() -> str:
-    #result = get_tables()
+    result = get_tables()
     # print('RESULT HERE', result)
-    return 'Database Website to go here' #render_template('table.html', list_tables = result)
+    return render_template('table.html', list_tables = result)
 
 if __name__ == '__main__':
     #db_init()#
