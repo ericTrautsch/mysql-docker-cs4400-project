@@ -2,7 +2,7 @@
 FROM python:3.6
 
 # The EXPOSE instruction indicates the ports on which a container
-EXPOSE 5000
+EXPOSE $PORT
 
 # ARG a_host=dbdev.cs.uiowa.edu
 # ARG a_password
