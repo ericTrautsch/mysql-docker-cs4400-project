@@ -15,6 +15,7 @@ docs/.obsidian/core-plugins.json
 docs/.obsidian/hotkeys.json
 docs/.obsidian/workspace.json
 docs/Untitled.md
+app/env/pyvenv.cfg
 app/env/Lib/site-packages/distutils-precedence.pth
 app/env/Lib/site-packages/Flask-2.2.3.dist-info/entry_points.txt
 app/env/Lib/site-packages/Flask-2.2.3.dist-info/INSTALLER
@@ -1931,7 +1932,6 @@ app/env/Lib/site-packages/werkzeug/wrappers/response.py
 app/env/Lib/site-packages/werkzeug/wrappers/__pycache__/__init__.cpython-310.pyc
 app/env/Lib/site-packages/werkzeug/wrappers/__pycache__/request.cpython-310.pyc
 app/env/Lib/site-packages/werkzeug/wrappers/__pycache__/response.cpython-310.pyc
-app/env/pyvenv.cfg
 app/env/Scripts/activate
 app/env/Scripts/activate.bat
 app/env/Scripts/Activate.ps1

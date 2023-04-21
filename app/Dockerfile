@@ -2,7 +2,29 @@
 FROM python:3.6
 
 # The EXPOSE instruction indicates the ports on which a container
-EXPOSE 5000
+EXPOSE $PORT
+
+# ARG a_host=dbdev.cs.uiowa.edu
+# ARG a_password
+# ARG a_user=root
+# ARG a_database=db_etrautsch
+
+# ENV HOST=$a_host
+# ENV DB_PASSWORD=$a_password
+# ENV DB_USER=$a_user
+# ENV DATABASE=$a_database
+
+ARG a_password
+ENV DB_PASSWORD $a_password
+
+ARG a_host
+ENV HOST $a_host
+
+ARG a_user
+ENV DB_USER $a_user
+
+ARG a_database
+ENV DATABASE $a_database
 
 # Sets the working directory for following COPY and CMD instructions
 # Notice we haven’t created a directory by this name - this instruction

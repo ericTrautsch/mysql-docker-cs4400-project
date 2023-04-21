@@ -1,12 +1,12 @@
 from typing import List, Dict
 import time
-from init_db import db_init
+#from init_db import db_init
 from flask import Flask, render_template, redirect, url_for
 import mysql.connector
 import json
 import os
 
-db_init()
+# db_init()
 app = Flask(__name__)
 
 
@@ -39,11 +39,12 @@ def get_tables(tables = ['Customer']) -> List[Dict]:
 
 @app.route('/')
 def index() -> str:
-    result = get_tables()
+    #result = get_tables()
     # print('RESULT HERE', result)
-    return render_template('table.html', list_tables = result)
+    return 'hi' #render_template('table.html', list_tables = result)
 
 if __name__ == '__main__':
+    #db_init()#
     app.run(host='0.0.0.0', port = os.environ.get('PORT'))
 
 
