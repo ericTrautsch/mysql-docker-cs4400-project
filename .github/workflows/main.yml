@@ -47,7 +47,7 @@ jobs:
 
           # (Optional, default: "")
           # Additional options of docker build command.
-          docker_options: "--no-cache --build-arg DB_PASSWORD=${{ secrets.DB_PASSWORD }} --build-arg DATABASE=${DATABASE} --build-arg DB_USER=${DB_USER} --build-arg ${HOST}"
+          docker_options: "--no-cache --build-arg a_password=${{ secrets.DB_PASSWORD }} --build-arg a_database=${{ vars.DATABASE }} --build-arg a_user=${{ vars.DB_USER }} --build-arg a_host=${{ vars.HOST }}"
 
           # (Optional, default: "web")
           # Select the process type for which you want the docker container to be uploaded.
