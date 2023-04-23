@@ -12,90 +12,207 @@ DROP TABLE IF EXISTS Supplier;
 DROP TABLE IF EXISTS Employee;
 
 
-
 -- Create tables
 CREATE TABLE Part (
   part_id INTEGER PRIMARY KEY,
-  description VARCHAR(255),
-  weight FLOAT,
-  manufacturer VARCHAR(255),
-  material_type VARCHAR(255)
+  description VARCHAR(255) NOT NULL,
+  weight FLOAT NOT NULL,
+  manufacturer VARCHAR(255) NOT NULL,
+  material_type VARCHAR(255) NOT NULL
 );
+
+-- Index on manufacturer in Part table
+CREATE INDEX idx_part_manufacturer ON Part(manufacturer);
 
 CREATE TABLE Supplier (
   supplier_id INTEGER PRIMARY KEY,
-  name VARCHAR(255),
-  address VARCHAR(255),
-  phone VARCHAR(255),
-  email VARCHAR(255)
+  name VARCHAR(255) NOT NULL UNIQUE,
+  address VARCHAR(255) NOT NULL,
+  phone VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE Customer (
   customer_id INTEGER PRIMARY KEY,
-  name VARCHAR(255),
-  address VARCHAR(255),
-  phone VARCHAR(255),
-  email VARCHAR(255)
+  name VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  phone VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE Employee (
   employee_id INTEGER PRIMARY KEY,
-  name VARCHAR(255),
-  address VARCHAR(255),
-  phone VARCHAR(255),
-  office_num VARCHAR(255),
-  email VARCHAR(255),
-  title VARCHAR(255),
-  hire_date DATE
+  name VARCHAR(255) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  phone VARCHAR(255) NOT NULL UNIQUE,
+  office_num VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  title VARCHAR(255) NOT NULL,
+  hire_date DATE NOT NULL
 );
 
 CREATE TABLE StorageArea (
   storage_area_id INTEGER PRIMARY KEY,
-  area VARCHAR(255),
-  capacity INTEGER,
-  location VARCHAR(255)
+  area VARCHAR(255) NOT NULL UNIQUE,
+  capacity INTEGER NOT NULL,
+  location VARCHAR(255) NOT NULL
 );
+
+-- Index on location in StorageArea table
+CREATE INDEX idx_storage_area_location ON StorageArea(location);
 
 CREATE TABLE Inventory (
-  part_id INTEGER,
-  storage_area_id INTEGER,
-  cost_per_unit FLOAT,
-  quantity INTEGER,
-  FOREIGN KEY (part_id) REFERENCES Part(part_id),
-  FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id)
+  part_id INTEGER NOT NULL,
+  storage_area_id INTEGER NOT NULL,
+  cost_per_unit FLOAT NOT NULL,
+  quantity INTEGER NOT NULL,
+  FOREIGN KEY (part_id) REFERENCES Part(part_id) ON DELETE CASCADE,
+  FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id) ON DELETE CASCADE
 );
 
-
-
 CREATE TABLE Outgoing (
-  customer_id INTEGER,
-  employee_id INTEGER,
-  storage_area_id INTEGER,
-  part_id INTEGER,
-  quantity INTEGER,
-  profit_per_unit FLOAT,
-  placed_on DATETIME,
+  customer_id INTEGER NOT NULL,
+  employee_id INTEGER NOT NULL,
+  storage_area_id INTEGER NOT NULL,
+  part_id INTEGER NOT NULL,
+  quantity INTEGER NOT NULL,
+  profit_per_unit FLOAT NOT NULL,
+  placed_on DATETIME NOT NULL,
   completed_on DATETIME,
-  FOREIGN KEY (customer_id) REFERENCES Customer(customer_id),
-  FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-  FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id),
-  FOREIGN KEY (part_id) REFERENCES Part(part_id)
+  FOREIGN KEY (customer_id) REFERENCES Customer(customer_id) ON DELETE CASCADE,
+  FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE,
+  FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id) ON DELETE CASCADE,
+  FOREIGN KEY (part_id) REFERENCES Part(part_id) ON DELETE CASCADE
 );
 
 CREATE TABLE Incoming (
-  part_id INTEGER,
-  storage_area_id INTEGER,
-  employee_id INTEGER,
-  supplier_id INTEGER,
-  cost_per_unit FLOAT,
-  quantity INTEGER,
-  ordered_on DATETIME,
+  part_id INTEGER NOT NULL,
+  storage_area_id INTEGER NOT NULL,
+  employee_id INTEGER NOT NULL,
+  supplier_id INTEGER NOT NULL,
+  cost_per_unit FLOAT NOT NULL,
+  quantity INTEGER NOT NULL,
+  ordered_on DATETIME NOT NULL,
   received_on DATETIME,
-  FOREIGN KEY (part_id) REFERENCES Part(part_id),
-  FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id),
-  FOREIGN KEY (employee_id) REFERENCES Employee(employee_id),
-  FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id)
+  FOREIGN KEY (part_id) REFERENCES Part(part_id) ON DELETE CASCADE,
+  FOREIGN KEY (storage_area_id) REFERENCES StorageArea(storage_area_id) ON DELETE CASCADE,
+  FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE,
+  FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id) ON DELETE CASCADE
 );
+
+
+-- Create Triggers
+-- Trigger 1: Update Inventory quantity when a new Incoming row is added
+DELIMITER //
+CREATE TRIGGER update_inventory_on_incoming_insert
+AFTER INSERT ON Incoming
+FOR EACH ROW
+BEGIN
+  UPDATE Inventory
+  SET quantity = quantity + NEW.quantity
+  WHERE part_id = NEW.part_id AND storage_area_id = NEW.storage_area_id;
+END; //
+DELIMITER ;
+
+-- Trigger 2: Update Inventory quantity when a new Outgoing row is added
+DELIMITER //
+CREATE TRIGGER update_inventory_on_outgoing_insert
+AFTER INSERT ON Outgoing
+FOR EACH ROW
+BEGIN
+  UPDATE Inventory
+  SET quantity = quantity - NEW.quantity
+  WHERE part_id = NEW.part_id AND storage_area_id = NEW.storage_area_id;
+END; //
+DELIMITER ;
+
+DROP VIEW IF EXISTS inventory_summary;
+DROP VIEW IF EXISTS customer_sales_summary;
+
+-- Create views
+-- View 1: Total quantity and value of each part in the inventory
+CREATE VIEW inventory_summary AS
+SELECT
+  i.part_id,
+  p.description,
+  p.manufacturer,
+  p.material_type,
+  SUM(i.quantity) AS total_quantity,
+  SUM(i.quantity * i.cost_per_unit) AS total_value
+FROM
+  Inventory i
+  JOIN Part p ON i.part_id = p.part_id
+GROUP BY
+  i.part_id,
+  p.description,
+  p.manufacturer,
+  p.material_type;
+
+-- View 2: Total sales and profit for each customer
+CREATE VIEW customer_sales_summary AS
+SELECT
+  o.customer_id,
+  c.name AS customer_name,
+  SUM(o.quantity) AS total_sales,
+  SUM(o.quantity * o.profit_per_unit) AS total_profit
+FROM
+  Outgoing o
+  JOIN Customer c ON o.customer_id = c.customer_id
+GROUP BY
+  o.customer_id,
+  c.name;
+
+-- Drop already-existing proceedures
+DROP PROCEDURE IF EXISTS get_low_stock_parts;
+DROP PROCEDURE IF EXISTS get_customer_sales_report;
+
+
+-- Create proceedures
+-- Procedure 1: Get parts with a total quantity less than the specified value
+DELIMITER //
+CREATE PROCEDURE get_low_stock_parts(IN minimum_quantity INT)
+BEGIN
+  SELECT
+    p.part_id,
+    p.description,
+    p.manufacturer,
+    p.material_type,
+    SUM(i.quantity) AS total_quantity
+  FROM
+    Inventory i
+    JOIN Part p ON i.part_id = p.part_id
+  GROUP BY
+    p.part_id,
+    p.description,
+    p.manufacturer,
+    p.material_type
+  HAVING
+    total_quantity < minimum_quantity;
+END; //
+DELIMITER ;
+
+-- Procedure 2: Generate a report of total sales and profits per customer for a specified date range
+DELIMITER //
+CREATE PROCEDURE get_customer_sales_report(IN start_date DATE, IN end_date DATE)
+BEGIN
+  SELECT
+    o.customer_id,
+    c.name AS customer_name,
+    SUM(o.quantity) AS total_sales,
+    SUM(o.quantity * o.profit_per_unit) AS total_profit
+  FROM
+    Outgoing o
+    JOIN Customer c ON o.customer_id = c.customer_id
+  WHERE
+    o.placed_on BETWEEN start_date AND end_date
+  GROUP BY
+    o.customer_id,
+    c.name;
+END; //
+DELIMITER ;
+
+
+
 
 -- Put sample data in the tables
 
