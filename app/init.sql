@@ -98,33 +98,6 @@ CREATE TABLE Incoming (
   FOREIGN KEY (supplier_id) REFERENCES Supplier(supplier_id) ON DELETE CASCADE
 );
 
-
--- Create Triggers (part 4)
--- Trigger 1: Update Inventory quantity when a new Incoming row is added
-DELIMITER //
-CREATE TRIGGER update_inventory_on_incoming_insert
-AFTER INSERT ON Incoming
-FOR EACH ROW
-BEGIN
-  UPDATE Inventory
-  SET quantity = quantity + NEW.quantity
-  WHERE part_id = NEW.part_id AND storage_area_id = NEW.storage_area_id;
-END; //
-DELIMITER ;
-
--- Trigger 2: Update Inventory quantity when a new Outgoing row is added
-DELIMITER //
-CREATE TRIGGER update_inventory_on_outgoing_insert
-AFTER INSERT ON Outgoing
-FOR EACH ROW
-BEGIN
-  UPDATE Inventory
-  SET quantity = quantity - NEW.quantity
-  WHERE part_id = NEW.part_id AND storage_area_id = NEW.storage_area_id;
-END; //
-DELIMITER ;
-
--- Drop views if they exist
 DROP VIEW IF EXISTS inventory_summary;
 DROP VIEW IF EXISTS customer_sales_summary;
 
@@ -162,52 +135,10 @@ GROUP BY
   c.name;
 
 -- Drop already-existing proceedures if they exist
-DROP PROCEDURE IF EXISTS get_low_stock_parts;
-DROP PROCEDURE IF EXISTS get_customer_sales_report;
+
 
 -- Create proceedures (part 7)
 -- Procedure 1: Get parts with a total quantity less than the specified value
-DELIMITER //
-CREATE PROCEDURE get_low_stock_parts(IN minimum_quantity INT)
-BEGIN
-  SELECT
-    p.part_id,
-    p.description,
-    p.manufacturer,
-    p.material_type,
-    SUM(i.quantity) AS total_quantity
-  FROM
-    Inventory i
-    JOIN Part p ON i.part_id = p.part_id
-  GROUP BY
-    p.part_id,
-    p.description,
-    p.manufacturer,
-    p.material_type
-  HAVING
-    total_quantity < minimum_quantity;
-END; //
-DELIMITER ;
-
--- Procedure 2: Generate a report of total sales and profits per customer for a specified date range
-DELIMITER //
-CREATE PROCEDURE get_customer_sales_report(IN start_date DATE, IN end_date DATE)
-BEGIN
-  SELECT
-    o.customer_id,
-    c.name AS customer_name,
-    SUM(o.quantity) AS total_sales,
-    SUM(o.quantity * o.profit_per_unit) AS total_profit
-  FROM
-    Outgoing o
-    JOIN Customer c ON o.customer_id = c.customer_id
-  WHERE
-    o.placed_on BETWEEN start_date AND end_date
-  GROUP BY
-    o.customer_id,
-    c.name;
-END; //
-DELIMITER ;
 
 
 
