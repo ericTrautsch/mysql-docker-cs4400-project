@@ -1,4 +1,8 @@
--- Use this schema
+-- Database Systems CS:4400
+-- Group2, Yiqi Liu, Daniel Dagle, Eric Trautsch; Spring 2023
+-- Deliverable 5 SQL script. This script is written to initalize the database, so SQL queries are commented out.
+
+-- Use this schema, edit if using a different database schema
 use warehouse;
 
 -- drop tables if they already exist
@@ -12,7 +16,7 @@ DROP TABLE IF EXISTS Supplier;
 DROP TABLE IF EXISTS Employee;
 
 
--- Create tables
+-- Create tables (Part 1)
 CREATE TABLE Part (
   part_id INTEGER PRIMARY KEY,
   description VARCHAR(255) NOT NULL,
@@ -21,7 +25,7 @@ CREATE TABLE Part (
   material_type VARCHAR(255) NOT NULL
 );
 
--- Index on manufacturer in Part table
+-- Index on manufacturer in Part table (part 3)
 CREATE INDEX idx_part_manufacturer ON Part(manufacturer);
 
 CREATE TABLE Supplier (
@@ -58,7 +62,7 @@ CREATE TABLE StorageArea (
   location VARCHAR(255) NOT NULL
 );
 
--- Index on location in StorageArea table
+-- Index on location in StorageArea table (part 3)
 CREATE INDEX idx_storage_area_location ON StorageArea(location);
 
 CREATE TABLE Inventory (
@@ -101,7 +105,7 @@ CREATE TABLE Incoming (
 );
 
 
--- Create Triggers
+-- Create Triggers (part 4)
 -- Trigger 1: Update Inventory quantity when a new Incoming row is added
 DELIMITER //
 CREATE TRIGGER update_inventory_on_incoming_insert
@@ -126,10 +130,11 @@ BEGIN
 END; //
 DELIMITER ;
 
+-- Drop views if they exist
 DROP VIEW IF EXISTS inventory_summary;
 DROP VIEW IF EXISTS customer_sales_summary;
 
--- Create views
+-- Create views (part 5)
 -- View 1: Total quantity and value of each part in the inventory
 CREATE VIEW inventory_summary AS
 SELECT
@@ -162,12 +167,11 @@ GROUP BY
   o.customer_id,
   c.name;
 
--- Drop already-existing proceedures
+-- Drop already-existing proceedures if they exist
 DROP PROCEDURE IF EXISTS get_low_stock_parts;
 DROP PROCEDURE IF EXISTS get_customer_sales_report;
 
-
--- Create proceedures
+-- Create proceedures (part 7)
 -- Procedure 1: Get parts with a total quantity less than the specified value
 DELIMITER //
 CREATE PROCEDURE get_low_stock_parts(IN minimum_quantity INT)
@@ -214,8 +218,7 @@ DELIMITER ;
 
 
 
--- Put sample data in the tables
-
+-- Put sample data in each of the tables, respecting foreign keys (part 2)
 
 -- Insert into Part
 INSERT INTO Part (part_id, description, weight, manufacturer, material_type)
@@ -280,3 +283,5 @@ VALUES (1, 1, 3, 1, 13000, 5, '2023-03-01 10:00:00', '2023-03-10 12:30:00'),
        (3, 2, 4, 3, 1800, 8, '2023-03-25 09:00:00', '2023-03-28 10:15:00'),
        (4, 3, 4, 4, 4500, 6, '2023-04-05 13:30:00', '2023-04-10 15:00:00'),
        (5, 4, 3, 5, 800, 15, '2023-04-12 11:00:00', '2023-04-18 12:00:00');
+
+-- Part 6, SQL queries are here. They are commented out since the function of this script is to create the database, and these would be queries that could run against the initalized database.
