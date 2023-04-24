@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 
-def get_tables(tables = ['Customer']) -> List[Dict]:
+def get_tables(tables = ['Inventory', 'Outgoing', 'Incoming', 'Part', 'StorageArea', 'Customer', 'Supplier', 'Employee']) -> List[Dict]:
 
 
     config = {
