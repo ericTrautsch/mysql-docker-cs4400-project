@@ -1,9 +1,11 @@
 {% extends "index.html" %}
 
 {% block table %}
+<h3>Showcase of all Tables and their tuples</h3>
+
 {% for data in list_tables %}
 <table>
-    <h2>{{data[0]}} Table</h2>
+    <h4>{{data[0]}} Table</h4>
     <thead>
       <tr>
         {% for column in data[1] %}
@@ -22,4 +24,57 @@
     </tbody>
   </table>
 {% endfor %}
+
+
+
+<h3>Showcase of Views</h3>
+
+{% for data in list_views %}
+<table>
+    <h4>{{data[0]}} View</h4>
+    <thead>
+      <tr>
+        {% for column in data[1] %}
+          <th>{{ column }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data[2] %}
+        <tr>
+          {% for value in row %}
+            <td>{{ value }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+
+<h3>Showcase of SQL Queries</h3>
+
+{% for data in list_queries %}
+<h4>{{data[0]}}</h4>
+<p>{{data[3]}}</p>
+<table>
+    <thead>
+      <tr>
+        {% for column in data[1] %}
+          <th>{{ column }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data[2] %}
+        <tr>
+          {% for value in row %}
+            <td>{{ value }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endfor %}
+
+
 {% endblock %}

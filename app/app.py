@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 
 
-def get_tables(tables = ['Inventory', 'Outgoing', 'Incoming', 'Part', 'StorageArea', 'Customer', 'Supplier', 'Employee']) -> List[Dict]:
+def get_tables(tables) -> List[Dict]:
 
 
     config = {
@@ -37,11 +37,39 @@ def get_tables(tables = ['Inventory', 'Outgoing', 'Incoming', 'Part', 'StorageAr
             results += [('error', 'error', 'error')]
     return results
 
+def execute_query(sql, query_name, query_desciption) -> List[Dict]:
+
+    config = {
+    'user': f'{os.environ.get("DB_USER")}',
+    'password': f'{os.environ.get("DB_PASSWORD")}',
+    'host': f'{os.environ.get("HOST")}',
+    'port': '3306',
+    'database': f'{os.environ.get("DATABASE")}'}
+ 
+    results = []
+    try:
+        connection = mysql.connector.connect(**config)
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        names = [field_md[0] for field_md in cursor.description]
+        data = cursor.fetchall()
+        results = (query_name, names, data, query_desciption)
+        cursor.close()
+        connection.close()
+    except:
+        # todo: flash an error message to html display
+        results += [('error', 'error', 'error', 'error')]
+    return results
+
 @app.route('/')
 def index() -> str:
-    result = get_tables()
+    tables = get_tables(['Inventory', 'Outgoing', 'Incoming', 'Part', 'StorageArea', 'Customer', 'Supplier', 'Employee'])
+    views = get_tables(['inventory_summary', 'customer_sales_summary'])
+    queries = [execute_query('SELECT * FROM Customer', 'Customer Query', 'Select all the tuples from Customer table'),
+               execute_query('SELECT * FROM Supplier', 'Supplier Query', 'SELECT all tuples from Supplier Table!')
+               ] 
     # print('RESULT HERE', result)
-    return render_template('table.html', list_tables = result)
+    return render_template('table.html', list_tables = tables, list_views = views, list_queries = queries)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port = os.environ.get('PORT'))
