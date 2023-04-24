@@ -3,7 +3,6 @@
 -- Deliverable 5 SQL script. This script is written to initalize the database, so SQL queries are commented out.
 
 -- Use this schema, edit if using a different database schema
-create database warehouse;
 use warehouse;
 
 -- drop tables if they already exist

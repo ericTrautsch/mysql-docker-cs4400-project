@@ -1942,3 +1942,4 @@ app/env/Scripts/pip3.10.exe
 app/env/Scripts/pip3.exe
 app/env/Scripts/python.exe
 app/env/Scripts/pythonw.exe
+group_database.env
