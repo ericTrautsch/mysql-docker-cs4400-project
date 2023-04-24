@@ -245,7 +245,6 @@ OrderHistoryView(__supplier_id__, name, address, phone, __part_id__, quantity, c
 
 ## Data Dictionary 
 
-
 Based on the normalized database design, our data dictionary takes this form:
 
 | Entity     | Attribute        | Description                                   | Data Type | Notes                    |
