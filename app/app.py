@@ -65,9 +65,9 @@ def execute_query(sql, query_name, query_desciption) -> List[Dict]:
 def index() -> str:
     tables = get_tables(['Inventory', 'Outgoing', 'Incoming', 'Part', 'StorageArea', 'Customer', 'Supplier', 'Employee'])
     views = get_tables(['inventory_summary', 'customer_sales_summary'])
-    queries = [execute_query('SELECT * FROM Customer', 'Customer Query', 'Select all the tuples from Customer table'),
-               execute_query('SELECT * FROM Supplier', 'Supplier Query', 'SELECT all tuples from Supplier Table!'),
-               execute_query('''SELECT p.part_id,  p.description,  s.storage_area_id,  s.area,  s.location, i.quantity FROM Inventory i JOIN Part p ON i.part_id = p.part_id JOIN StorageArea s ON i.storage_area_id = s.storage_area_id WHERE p.part_id = 1;''', 'Find Part X Query','Where can I find part id X in the warehouse to pick and add to an outgoing shipment? (Using part_id 1 as an example)')
+    queries = [  execute_query('''SELECT p.part_id,  p.description,  s.storage_area_id,  s.area,  s.location, i.quantity FROM Inventory i JOIN Part p ON i.part_id = p.part_id JOIN StorageArea s ON i.storage_area_id = s.storage_area_id WHERE p.part_id = 1;''', 'Find Part X Query','Where can I find part id X in the warehouse to pick and add to an outgoing shipment? (Using part_id 1 as an example)')
+               , execute_query('''SELECT SUM(i.quantity * i.cost_per_unit) AS total_value FROM Inventory i WHERE i.part_id = 1;''', 'Find Part X Value', 'What is the total value of all parts of type X stored in the warehouse?')
+               , execute_query('''SELECT s.storage_area_id FROM StorageArea s WHERE NOT EXISTS( SELECT i.storage_area_id FROM Inventory i);''', 'Find Empty Storage Areas', 'Which storage areas can accommodate a new part type?')
                ] 
     # print('RESULT HERE', result)
     return render_template('table.html', list_tables = tables, list_views = views, list_queries = queries)
