@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block table %}
-<h3>Showcase of all Tables and their tuples</h3>
+<h1>Showcase of all Tables and their tuples</h1>
 
 {% for data in list_tables %}
 <table>
@@ -27,7 +27,7 @@
 
 
 
-<h3>Showcase of Views</h3>
+<h1>Showcase of Views</h1>
 
 {% for data in list_views %}
 <table>
@@ -51,7 +51,7 @@
   </table>
 {% endfor %}
 
-<h3>Showcase of SQL Queries</h3>
+<h1>Showcase of SQL Queries</h1>
 
 {% for data in list_queries %}
 <h4>{{data[0]}}</h4>
@@ -76,5 +76,6 @@
   </table>
 {% endfor %}
 
+<h5>This concludes our project website. Thank you!</h5>
 
 {% endblock %}
