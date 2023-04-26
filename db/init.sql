@@ -3,6 +3,7 @@
 -- Deliverable 5 SQL script. This script is written to initalize the database, so SQL queries are commented out.
 
 -- Use this schema, edit if using a different database schema
+create database warehouse;
 use warehouse;
 
 -- drop tables if they already exist
@@ -216,8 +217,6 @@ END; //
 DELIMITER ;
 
 
-
-
 -- Put sample data in each of the tables, respecting foreign keys (part 2)
 
 -- Insert into Part
@@ -254,15 +253,21 @@ VALUES (1, 'John Doe', '111 First St, Anytown', '555-321-0987', 'A1', 'johndoe@e
 
 -- Insert into StorageArea
 INSERT INTO StorageArea (storage_area_id, area, capacity, location)
-VALUES (1, 'A1', 1000, 'North'),
+VALUES (1, 'A1', 30, 'North'),
        (2, 'A2', 1200, 'North'),
        (3, 'B1', 1500, 'South'),
        (4, 'B2', 800, 'South'),
-       (5, 'C1', 500, 'East');
+       (5, 'C1', 500, 'East'),
+       (6, 'C2', 900, 'East'),
+       (7, 'D1', 2000, 'West'),
+       (8, 'D2', 1100, 'West'),
+       (9, 'E1', 750, 'North'),
+       (10, 'E2', 600, 'North');
 
 -- Insert into Inventory
 INSERT INTO Inventory (part_id, storage_area_id, cost_per_unit, quantity)
-VALUES (1, 1, 15000, 10),
+VALUES (1, 1, 15000, 22),
+       (1, 5, 15500, 8),
        (2, 1, 3000, 20),
        (3, 2, 2000, 15),
        (4, 3, 5000, 12),
@@ -278,10 +283,48 @@ VALUES (1, 2, 1, 1, 2, 2000, '2023-04-01 10:00:00', '2023-04-02 12:30:00'),
 
 -- Insert into Incoming
 INSERT INTO Incoming (part_id, storage_area_id, employee_id, supplier_id, cost_per_unit, quantity, ordered_on, received_on)
-VALUES (1, 1, 3, 1, 13000, 5, '2023-03-01 10:00:00', '2023-03-10 12:30:00'),
+VALUES (1, 1, 3, 1, 13000, 22, '2023-03-01 10:00:00', '2023-03-10 12:30:00'),
        (2, 1, 3, 2, 2500, 10, '2023-03-15 14:30:00', '2023-03-20 16:45:00'),
        (3, 2, 4, 3, 1800, 8, '2023-03-25 09:00:00', '2023-03-28 10:15:00'),
        (4, 3, 4, 4, 4500, 6, '2023-04-05 13:30:00', '2023-04-10 15:00:00'),
        (5, 4, 3, 5, 800, 15, '2023-04-12 11:00:00', '2023-04-18 12:00:00');
 
 -- Part 6, SQL queries are here. They are commented out since the function of this script is to create the database, and these would be queries that could run against the initalized database.
+
+-- Find Part Query: (Query 1)
+--   Where can I find part id a specific part in the warehouse to pick and add to an outgoing shipment? (Using part_id 1 as an example)
+-- SELECT p.part_id,  p.description,  s.storage_area_id,  s.area,  s.location, i.quantity 
+-- FROM Inventory i JOIN Part p ON i.part_id = p.part_id JOIN StorageArea s ON i.storage_area_id = s.storage_area_id 
+-- WHERE p.part_id = 1;
+
+
+-- Find Part Value: (Query 2)
+--   What is the total value of all parts of a certain type stored in the warehouse? (Using part id 1)
+-- SELECT SUM(i.quantity * i.cost_per_unit) AS total_value 
+-- FROM Inventory i 
+-- WHERE i.part_id = 1;
+
+-- Find Empty Storage Areas: (Query 3)
+--   Which storage areas can accommodate a new part type?
+-- SELECT * FROM StorageArea s 
+-- WHERE NOT EXISTS ( 
+--   SELECT i.storage_area_id FROM Inventory i 
+--   WHERE i.storage_area_id = s.storage_area_id 
+-- );
+
+
+-- Highest Outgoing Demand: (Query 4)
+--   What part is in the highest outgoing demand? (involves join, aggregation, and subquery)
+-- SELECT p.part_id, p.description, p.manufacturer, p.material_type, SUM(o.quantity) AS total_outgoing_quantity 
+-- FROM Part p JOIN Outgoing o ON p.part_id = o.part_id 
+-- GROUP BY p.part_id, p.description, p.manufacturer, p.material_type 
+-- HAVING total_outgoing_quantity = ( SELECT MAX(total_outgoing_quantity) FROM ( 
+--   SELECT part_id, SUM(quantity) AS total_outgoing_quantity 
+--   FROM Outgoing GROUP BY part_id ) AS outgoing_summary );
+
+
+-- Profits This Year:
+--   What are our profits for the current year? (involves join and aggregation)
+-- SELECT SUM(o.quantity * o.profit_per_unit) AS total_profit 
+-- FROM Outgoing o 
+-- WHERE o.placed_on >= DATE_FORMAT(NOW(), '%Y-01-01') AND o.placed_on < DATE_FORMAT(NOW(), '%Y-%m-%d');

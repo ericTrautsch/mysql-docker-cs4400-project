@@ -1,4 +1,4 @@
-# Aircraft Parts Distribution Center 
+# Aircraft Parts Distribution Center Project Report
 
 CS:4400 Database Systems 
 Group 2 
@@ -361,3 +361,50 @@ Incoming(__part_id__, __supplier_id__, ordered_on, __received_on__, quantity, co
 Inventory(__part_id__, __storage_area_id__, quantity)
 
 As the final relations.
+
+## Implementation (Deliverable 5)
+
+This implementation was developed using Git version control. Our GitHub repository is [here](https://github.com/ericTrautsch/mysql-docker-cs4400-project). In our Github, this is also configured to run as a container with a local MySQL server initalized and connected to the flask-web application that generates the HTML. To start, just install docker and run `docker compose up` in the main directory of the Git repository, and go to `localhost:5000` once the server starts fully.
+
+Our project is implemented in MySQL using an `init.sql` script that initalizes the database, and a flask-app that runs on top to generate the HTML based on the database. This is deployed to [here](https://flask-docker.herokuapp.com/) using a cloud database and website hosting service. This is the same HTML code as is on the submitted HTML code. The database this hosted website runs on is not the same as the one provided at dbdev.cs.uiowa.edu, so a locally run version of the flask-application was used to generate the index.html (and style.css), and copied to the group folder. 
+
+The `init.sql` file contains all of the code required to initalize the database. For this project, it includes insert statements to provide inital data to the database. In a more complicated project, the web interface would handle user authentication and allow for updates to the database. However, in this case, this website works properly when configured to point to any database initalized with the `init.sql` code.
+
+[Link to `init.sql` file on GitHub Repository](https://github.com/ericTrautsch/mysql-docker-cs4400-project/blob/main/db/init.sql)
+
+Some notes about this file:
+- It may include creating and using a database named warehouse at the top of the file. This is to handle configuration for the Docker environment. It can be removed when using a database with a schema already created.
+- It is designed to run on a database and drop any created objects (Tables, Views, Proceedures, Triggers, etc..). This will lead to loss of data in a real-life database, so caution should be taken.
+
+
+Some notes on the creation of tables and indices
+- Focus on forcing many of the values to be non-null quantites. In this environment it is important for each inventory/incoming/outgoing order to have specific and tracable details for audits.
+- We are indexing the Part table on manufacturer and StorageArea on location, as these tables are most likely to be queried by these entries.
+- Foreign keys are used for the Relationship tables, such as Inventory, to verify that the part number stored is valid, as well as the storage location. These foreign keys enforce default behavior.
+
+Some notes on insertion of tupes into tables
+- Focusing on inserting quantites that are very simple and make sense. Specifically, focused on using part id = 1 to have multiple inventory entries to showcase some of the SQL queries we display at the end of the script.
+
+Some notes on triggers:
+- We created triggers to help keep inventory quantites up-to-date. The first Trigger adds the new quantity to Inventory when an incoming order is placed. 
+- Another trigger is created to subtract from Inventory quantity when an Outgiong order is placed.
+- These triggers help keep the quantity of parts in Inventory consistent.
+
+Some notes on views:
+- The views that we created help get the total quantity of part in Inventory (an Inventory summary), and another one to show the total sales and profit by customer (A customer sales summary). Both of these are genuinely useful queries that are quite useful as views to display this useful information easily.
+- Note that each of these require Joins.
+
+Some notes on Proceedures:
+- We created two proceedures. `get_low_stock_parts` takes a `minimum_quantity` and displays all parts with a quantity lower than the specified value. This can be a useful script to look for parts with a low absolue value of parts.
+- The second proceedure generates a report of sales and profits per customer between a date range. `get_customer_sales_report` provides a report with dynamic start and end dates, which are useful to search over differing time periods.
+
+Some notes on the SQL Queries:
+- SQL queries are included in the `init.sql`, but are commented out to allow the script to function as a database creation script on it's own. 
+- Each of the queries provides a useful function that a user of this database might find useful. We designed the queries to work with the data we inserted in the database, but some of the queries return a small amount of entires due to the small amount of data inserted. 
+
+Some notes on the Project Website:
+- The website was developed using python's Flask package, allowing for the development of HTML using a Jinja template rendering inside of the Flask application.
+- The final submitted version on `https://webdev.cs.uiowa.edu/~cs4400_team2/` was generated using the Flask website and copied to this location with associated CSS formatting for HTML tables.
+- The project website focused on display each `table` and `view`, as these are simple to display as well to provide additional visual detail. 
+- The 5 SQL queries are displayed, each with a small associated description.
+- This project website shows the deveopment of our implementation and the results of the queries that we wrote against our database.
