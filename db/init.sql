@@ -299,8 +299,8 @@ VALUES (1, 1, 3, 1, 13000, 22, '2023-03-01 10:00:00', '2023-03-10 12:30:00'),
 
 
 -- Find Part Value: (Query 2)
---   What is the total value of all parts of a certain type stored in the warehouse? (Using part id 1)
--- SELECT SUM(i.quantity * i.cost_per_unit) AS total_value 
+--   What is the total value of all parts of a certain type stored in the warehouse? (Using part_id 1 as an example)
+-- SELECT part_id, SUM(i.quantity * i.cost_per_unit) AS total_value 
 -- FROM Inventory i 
 -- WHERE i.part_id = 1;
 
