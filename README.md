@@ -4,7 +4,7 @@ CS:4400 Database Systems 
 Group 2 
 Yiqi Liu, Daniel Dagle, Eric Trautsch 
 
-See our [project report](https://github.com/ericTrautsch/mysql-docker-cs4400-project/blob/main/docs/Deliverable4.md)
+See our [project report](https://github.com/ericTrautsch/mysql-docker-cs4400-project/blob/main/docs/ProjectReport.md)
 
 
 This project is defined in a few folders:
